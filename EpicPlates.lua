@@ -1,5 +1,5 @@
 -- Made by Sharpedge_Gaming
--- v2.4 - 11.1.0
+-- v2.5 - 11.1.0
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -42,7 +42,7 @@ EpicPlates.defaults = {
         debuffIconPositions = {},
         showHealthPercent = false,
         healthPercentFontColor = {1, 1, 1}, 
-        timerPosition = "BELOW",	
+       -- timerPosition = "BELOW",	
         iconXOffset = 0,   
         iconYOffset = 0,
         iconGlowEnabled = false,	
@@ -699,8 +699,16 @@ function EpicPlates:HandleAuraDisplay(iconTable, aura, currentTime, UnitFrame)
         iconTable.timer = timer
     end
 
+    -- Clear previous positioning and apply new position based on settings
     timer:ClearAllPoints()
-    timer:SetPoint("TOP", icon, "BOTTOM", 0, -2)
+    if self.db.profile.timerPosition == "MIDDLE" then
+        timer:SetPoint("CENTER", icon, "CENTER", 0, 0)
+        timer:SetJustifyH("CENTER")
+        timer:SetJustifyV("MIDDLE")
+    else
+        timer:SetPoint("TOP", icon, "BOTTOM", 0, -2)
+    end
+
     timer:SetFont(LSM:Fetch("font", self.db.profile.timerFont), self.db.profile.timerFontSize, "OUTLINE")
     timer:Show()
 
@@ -733,7 +741,6 @@ function EpicPlates:HandleAuraDisplay(iconTable, aura, currentTime, UnitFrame)
                 iconTable.updateFrame.glowApplied = false
             end
         else
-            
             timer:Hide()
             icon:Hide()
             if iconTable.updateFrame.glowApplied then
@@ -765,6 +772,7 @@ function EpicPlates:HandleAuraDisplay(iconTable, aura, currentTime, UnitFrame)
         GameTooltip:Hide()
     end)
 end
+
 
 function EpicPlates:HandleAuraApplied(unit, spellId, auraType)
     self:UpdateAuras(unit)
