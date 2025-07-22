@@ -1,5 +1,5 @@
 -- Made by Sharpedge_Gaming
--- v2.7 - 11.1.5 - 11.1.7
+-- v2.5 - 11.1.0
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -307,7 +307,7 @@ local function ShowPvPItem(unit, isRacial)
     local UnitFrame = nameplate.UnitFrame
     local frameKey = isRacial and "PvPRacialFrame" or "PvPTrinketFrame"
     local racialAbility = GetRacialAbility(unit)
-    local iconTexture = isRacial and (racialAbility and racialAbility.texture) or 1322720
+    local iconTexture = isRacial and (racialAbility and racialAbility.texture) or 1322720  -- Default trinket icon
 
     if UnitFrame[frameKey] then
         UnitFrame[frameKey]:Hide()
@@ -315,28 +315,24 @@ local function ShowPvPItem(unit, isRacial)
 
     if not UnitFrame[frameKey] then
         UnitFrame[frameKey] = CreateFrame("Frame", nil, UnitFrame)
-        UnitFrame[frameKey]:SetSize(22, 22)
+        UnitFrame[frameKey]:SetSize(22, 22)  
         UnitFrame[frameKey].icon = UnitFrame[frameKey]:CreateTexture(nil, "OVERLAY")
         UnitFrame[frameKey].icon:SetAllPoints(UnitFrame[frameKey])
-
-        UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
-        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
-        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)
-        UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
+        
+        UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)  
+        UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)  
         UnitFrame[frameKey].timerText:Hide()
-    else
-        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
-        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)
-        UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
     end
 
     if isRacial then
-        UnitFrame[frameKey]:SetPoint("RIGHT", UnitFrame, "RIGHT", 38, 0)
+        UnitFrame[frameKey]:SetPoint("RIGHT", UnitFrame, "RIGHT", 38, 0)  
     else
         if UnitFrame.PvPRacialFrame and UnitFrame.PvPRacialFrame:IsShown() then
-            UnitFrame[frameKey]:SetPoint("RIGHT", UnitFrame.PvPRacialFrame, "LEFT", 0, 0)
+            UnitFrame[frameKey]:SetPoint("RIGHT", UnitFrame.PvPRacialFrame, "LEFT", 0, 0)  
         else
-            UnitFrame[frameKey]:SetPoint("RIGHT", UnitFrame, "RIGHT", 20, 0)
+            UnitFrame[frameKey]:SetPoint("RIGHT", UnitFrame, "RIGHT", 20, 0)  
         end
     end
 
@@ -410,7 +406,7 @@ local function StartCooldown(unit, isRacial, spellId)
     local UnitFrame = nameplate.UnitFrame
     local frameKey = isRacial and "PvPRacialFrame" or "PvPTrinketFrame"
     local cooldownKey = isRacial and "RacialCooldown" or "TrinketCooldown"
-    local cooldownDuration = isRacial and (racialSpells[spellId] or 120) or 120
+    local cooldownDuration = isRacial and (racialSpells[spellId] or 120) or 120  
 
     if UnitFrame and UnitFrame[frameKey] then
 
@@ -418,28 +414,27 @@ local function StartCooldown(unit, isRacial, spellId)
             UnitFrame[frameKey][cooldownKey]:SetCooldown(GetTime(), cooldownDuration)
         else
             UnitFrame[frameKey][cooldownKey] = CreateFrame("Cooldown", nil, UnitFrame[frameKey], "CooldownFrameTemplate")
-            UnitFrame[frameKey][cooldownKey]:SetAllPoints(UnitFrame[frameKey])
+            UnitFrame[frameKey][cooldownKey]:SetAllPoints(UnitFrame[frameKey])  
             UnitFrame[frameKey][cooldownKey]:SetCooldown(GetTime(), cooldownDuration)
         end
 
         if not UnitFrame[frameKey].timerText then
-            UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
+            UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
+            UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)  
         end
-        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
-        UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
-        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)
         UnitFrame[frameKey].timerText:Show()
 
         C_Timer.NewTicker(0.1, function()
             local startTime, duration = UnitFrame[frameKey][cooldownKey]:GetCooldownTimes()
-            local remainingTime = (startTime + duration) / 1000 - GetTime()
+            local remainingTime = (startTime + duration) / 1000 - GetTime()  
 
             if remainingTime > 0 then
                 UnitFrame[frameKey].timerText:SetText(math.ceil(remainingTime))
             else
                 UnitFrame[frameKey].timerText:Hide()
             end
-        end, cooldownDuration * 10)
+        end, cooldownDuration * 10)  
     end
 end
 
