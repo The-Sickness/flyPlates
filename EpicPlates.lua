@@ -1,5 +1,5 @@
 -- Made by Sharpedge_Gaming
--- v2.5 - 11.1.0
+-- v2.7 - 11.1.5 - 11.1.7
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -199,7 +199,7 @@ local function OnInspectReady(self, event, guid)
                 if specID and healerSpecs[specID] then
                     if not nameplate.HealerIcon then
                         nameplate.HealerIcon = CreateFrame("Frame", nil, nameplate)
-                        nameplate.HealerIcon:SetSize(28, 28)
+                        nameplate.HealerIcon:SetSize(25, 25)
                         nameplate.HealerIcon.Texture = nameplate.HealerIcon:CreateTexture(nil, "OVERLAY")
                         nameplate.HealerIcon.Texture:SetAllPoints(nameplate.HealerIcon)
                         nameplate.HealerIcon.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")
@@ -319,8 +319,8 @@ local function ShowPvPItem(unit, isRacial)
         UnitFrame[frameKey].icon = UnitFrame[frameKey]:CreateTexture(nil, "OVERLAY")
         UnitFrame[frameKey].icon:SetAllPoints(UnitFrame[frameKey])
         
-        UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+        UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
+        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 6, "OUTLINE")
         UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)  
         UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)  
         UnitFrame[frameKey].timerText:Hide()
@@ -406,7 +406,7 @@ local function StartCooldown(unit, isRacial, spellId)
     local UnitFrame = nameplate.UnitFrame
     local frameKey = isRacial and "PvPRacialFrame" or "PvPTrinketFrame"
     local cooldownKey = isRacial and "RacialCooldown" or "TrinketCooldown"
-    local cooldownDuration = isRacial and (racialSpells[spellId] or 120) or 120  
+    local cooldownDuration = isRacial and (racialSpells[spellId] or 120) or 120
 
     if UnitFrame and UnitFrame[frameKey] then
 
@@ -414,27 +414,31 @@ local function StartCooldown(unit, isRacial, spellId)
             UnitFrame[frameKey][cooldownKey]:SetCooldown(GetTime(), cooldownDuration)
         else
             UnitFrame[frameKey][cooldownKey] = CreateFrame("Cooldown", nil, UnitFrame[frameKey], "CooldownFrameTemplate")
-            UnitFrame[frameKey][cooldownKey]:SetAllPoints(UnitFrame[frameKey])  
+            UnitFrame[frameKey][cooldownKey]:SetHideCountdownNumbers(true)
+            UnitFrame[frameKey][cooldownKey]:SetAllPoints(UnitFrame[frameKey])
             UnitFrame[frameKey][cooldownKey]:SetCooldown(GetTime(), cooldownDuration)
         end
 
         if not UnitFrame[frameKey].timerText then
-            UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
             UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
-            UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)  
         end
+
+        -- Hard code font, size, color:
+        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
+        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)
         UnitFrame[frameKey].timerText:Show()
 
         C_Timer.NewTicker(0.1, function()
             local startTime, duration = UnitFrame[frameKey][cooldownKey]:GetCooldownTimes()
-            local remainingTime = (startTime + duration) / 1000 - GetTime()  
+            local remainingTime = (startTime + duration) / 1000 - GetTime()
 
             if remainingTime > 0 then
                 UnitFrame[frameKey].timerText:SetText(math.ceil(remainingTime))
             else
                 UnitFrame[frameKey].timerText:Hide()
             end
-        end, cooldownDuration * 10)  
+        end, cooldownDuration * 10)
     end
 end
 
@@ -541,7 +545,7 @@ function EpicPlates:UpdateHealerIcon(unit)
 
     if not nameplate.HealerIcon then
         nameplate.HealerIcon = CreateFrame("Frame", nil, nameplate)
-        nameplate.HealerIcon:SetSize(30, 30)
+        nameplate.HealerIcon:SetSize(25, 25)
         nameplate.HealerIcon.Texture = nameplate.HealerIcon:CreateTexture(nil, "OVERLAY")
         nameplate.HealerIcon.Texture:SetAllPoints(nameplate.HealerIcon)
         nameplate.HealerIcon.Texture:SetTexture("Interface\\AddOns\\EpicPlates\\Textures\\Heal.png")
