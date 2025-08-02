@@ -1,5 +1,5 @@
--- Made by Sharpedge_Gaming
--- v2.7 - 11.1.5 - 11.1.7
+ -- Made by Sharpedge_Gaming
+-- v2.9 - 11.2
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -434,16 +434,17 @@ local function StartCooldown(unit, isRacial, spellId)
         -- Create timerText if it doesn't exist, and set it above the icon
         if not UnitFrame[frameKey].timerText then
             UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
-            UnitFrame[frameKey].timerText:SetDrawLayer("OVERLAY", 7) -- Make sure it's above the icon
+            UnitFrame[frameKey].timerText:SetDrawLayer("OVERLAY", 10) 
             UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
         end
 
         -- Hard code font, size, color:
-        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
+        UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 10, "THICKOUTLINE")
         UnitFrame[frameKey].timerText:SetTextColor(0, 1, 0)
         UnitFrame[frameKey].timerText:Show()
 		local color = EpicPlates.db.profile.trinketTimerFontColor or {1, 1, 1}
         UnitFrame[frameKey].timerText:SetTextColor(unpack(color))
+		UnitFrame[frameKey].icon:SetAlpha(1)
 		
         C_Timer.NewTicker(0.1, function()
             local startTime, duration = UnitFrame[frameKey][cooldownKey]:GetCooldownTimes()
