@@ -1,5 +1,5 @@
 -- Made by Sharpedge_Gaming
--- v2.5 - 11.1.0
+-- v2.8 - 11.1.7
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -216,6 +216,20 @@ local options = {
                 EpicPlates:UpdateIconSize()  
             end,
 			},
+			trinketTimerFontColor = {
+    type = "color",
+    name = "Trinket Font Color",
+    desc = "Set the font color for the trinket/racial timer numbers.",
+    order = 15, -- Place it after timerPosition
+    get = function()
+        local color = EpicPlates.db.profile.trinketTimerFontColor or {1, 1, 1}
+        return unpack(color)
+    end,
+    set = function(_, r, g, b)
+        EpicPlates.db.profile.trinketTimerFontColor = {r, g, b}
+        EpicPlates:UpdateTrinketTimerFontColor()
+    end,
+},
 			
 
         -- Minimap Icon Settings
