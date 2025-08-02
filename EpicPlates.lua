@@ -49,6 +49,7 @@ EpicPlates.defaults = {
         alwaysShowAuras = false,
 		auraThresholdMore = 0,
 		auraThresholdLess = 60,
+		trinketTimerFontColor = {1, 1, 1},
 		
     },
 }
@@ -321,8 +322,11 @@ local function ShowPvPItem(unit, isRacial)
         
         UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
         UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 6, "OUTLINE")
-        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)  
-        UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)  
+        local color = EpicPlates.db.profile.trinketTimerFontColor or {1, 1, 1}
+        UnitFrame[frameKey].timerText:SetTextColor(unpack(color))
+		local color = EpicPlates.db.profile.trinketTimerFontColor or {1, 1, 1}
+        UnitFrame[frameKey].timerText:SetTextColor(unpack(color))
+        UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
         UnitFrame[frameKey].timerText:Hide()
     end
 
@@ -339,6 +343,8 @@ local function ShowPvPItem(unit, isRacial)
     UnitFrame[frameKey].icon:SetTexture(iconTexture)
     UnitFrame[frameKey]:Show()
 end
+
+
 
 -- Function to Hide Trinket or Racial Ability
 local function HidePvPItem(unit, isRacial)
@@ -419,16 +425,26 @@ local function StartCooldown(unit, isRacial, spellId)
             UnitFrame[frameKey][cooldownKey]:SetCooldown(GetTime(), cooldownDuration)
         end
 
+        -- Create icon if it doesn't exist (to ensure correct layering)
+        if not UnitFrame[frameKey].icon then
+            UnitFrame[frameKey].icon = UnitFrame[frameKey]:CreateTexture(nil, "OVERLAY")
+            UnitFrame[frameKey].icon:SetAllPoints(UnitFrame[frameKey])
+        end
+
+        -- Create timerText if it doesn't exist, and set it above the icon
         if not UnitFrame[frameKey].timerText then
             UnitFrame[frameKey].timerText = UnitFrame[frameKey]:CreateFontString(nil, "OVERLAY")
+            UnitFrame[frameKey].timerText:SetDrawLayer("OVERLAY", 7) -- Make sure it's above the icon
             UnitFrame[frameKey].timerText:SetPoint("CENTER", UnitFrame[frameKey], "CENTER", 0, 0)
         end
 
         -- Hard code font, size, color:
         UnitFrame[frameKey].timerText:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
-        UnitFrame[frameKey].timerText:SetTextColor(1, 1, 1)
+        UnitFrame[frameKey].timerText:SetTextColor(0, 1, 0)
         UnitFrame[frameKey].timerText:Show()
-
+		local color = EpicPlates.db.profile.trinketTimerFontColor or {1, 1, 1}
+        UnitFrame[frameKey].timerText:SetTextColor(unpack(color))
+		
         C_Timer.NewTicker(0.1, function()
             local startTime, duration = UnitFrame[frameKey][cooldownKey]:GetCooldownTimes()
             local remainingTime = (startTime + duration) / 1000 - GetTime()
@@ -439,6 +455,18 @@ local function StartCooldown(unit, isRacial, spellId)
                 UnitFrame[frameKey].timerText:Hide()
             end
         end, cooldownDuration * 10)
+    end
+end
+
+function EpicPlates:UpdateTrinketTimerFontColor()
+    for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+        local UnitFrame = nameplate.UnitFrame
+        for _, frameKey in pairs({"PvPTrinketFrame", "PvPRacialFrame"}) do
+            if UnitFrame and UnitFrame[frameKey] and UnitFrame[frameKey].timerText then
+                local color = self.db.profile.trinketTimerFontColor or {1, 1, 1}
+                UnitFrame[frameKey].timerText:SetTextColor(unpack(color))
+            end
+        end
     end
 end
 
